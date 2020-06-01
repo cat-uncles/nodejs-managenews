@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/news/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/main.css">
+    <script type="text/javascript" src="/news/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/news/js/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/news/js/user_pic_info.js"></script>
+</head>
+
+<body class="inframe_body">
+    <form class="pic_info">
+        <h3>头像设置</h3>
+        <div class="form-group">
+            <label class="label01">当前图像：</label>
+            <img src="{{ avatar_url }}" alt="用户图片" class="now_user_pic" id="now_user_pic">
+        </div>
+        <div class="form-group">
+            <label>上传图像：</label>
+            <input type="file" name="avatar" class="input_file" id="upload_file" onchange="changepic(this)">
+
+            <!-- onchange="changepic(this)" 这里面的this可以不用传，如果要传，就是指向input标签 -->
+            <!-- html5中有个input type=file元素。用该元素可以实现页面上传文件的功能 -->
+            <!-- file对象只获取到了对文件的描述信息，但没有获得文件中的数据，而inputBox.value也只是保存的是文件的绝对路径 -->
+
+            <script>
+                // 这个js实现函数与ajax没有任何关系，只触及了两个点，1.<input type="file"> 2.实例化FileReader() -- 就是实现了把图片传到后台了（当然后端也要先安装引入好 multer 来接收，具体看后端代码）
+                function changepic() {
+
+                    // console.log(event); // 默认存在的事件对象
+                    // console.log(this); // 指向windows
+
+                    //实现图片预览效果的js
+                    var reads = new FileReader(); // FileReader() 读取文件
+                    // console.log(reads);
+                    f = document.getElementById('upload_file').files[0]; // files是一个数组，我们只要第一张，所以[0] javascript的方法 获取文件对象 -- 就是获得头像了
+                    // console.log(f);
+                    reads.readAsDataURL(f); // 发起异步请求 readAsDataURL会将文件内容进行base64编码后输出
+                    reads.onload = function (e) { // onload 当读取操作成功完成时调用
+                        // console.log(this); // this 指向 reads --> FileReader()
+                        //读取完成后，数据保存在对象的result属性中
+                        document.getElementById('now_user_pic').src = this.result; // base64内容显示 -- 展示头像了
+                        console.log(this.result); // 由于媒体文件的src属性，可以通过采用网络地址或base64的方式显示，因此我们可以利用readAsDataURL实现对图片的预览
+                    };
+                };
+            </script>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="保 存" class="input_sub">
+        </div>
+    </form>
+</body>
+
+</html>
+
+<!-- 
+    FileReader()
+
+    var reads = new FileReader(); // 实例化FileReader() 读取文件
+    console.log(reads);
+    打印结果：
+
+    FileReader {readyState: 0, result: null, error: null, onloadstart: null, onprogress: null, …}
+    error: null
+    onabort: null
+    onerror: null
+    onload: ƒ (e)
+    onloadend: null
+    onloadstart: null
+    onprogress: null
+    readyState: 2
+    result: "data:image/gif;base64,R0lGODlhHAIsAfchAAoEBgIbSiJB"
+    __proto__: FileReader
+ -->
+
+<!-- 
+    FileReader提供的方法：
+
+　　①readAsArrayBuffer(file)： 按字节读取文件内容，结果用ArrayBuffer对象表示;
+
+　　②readAsBinaryString(file)： 按字节读取文件内容，结果为文件的二进制串;
+
+　　③readAsDataURL(file)： 读取文件内容，结果用data:url的字符串形式表示;
+
+　　④readAsText(file,encoding)： 按字符读取文件内容，结果用字符串形式表示;
+
+　　⑤abort()： 终止文件读取操作.
+
+　　其中readAsDataURL和readAsText较为常用 
+-->
+
+<!-- 
+    FileReader提供的事件（生命周期）
+
+　　①onabort：当读取操作被中止时调用;
+
+　　②onerror 当读取操作发生错误时调用;
+
+　　③onload 当读取操作成功完成时调用;
+
+　　④onloadend 当读取操作完成时调用，无论成功或失败;
+
+　　⑤onloadstart 当读取操作开始时调用;
+
+　　⑥onprogress 在读取数据过程中周期性调用.
+ -->
+
+
+<!-- 
+    f = document.getElementById('upload_file').files[0];
+    console.log(f);
+    打印结果：
+
+    File {name: "05.jpg", lastModified: 1590756678971, lastModifiedDate: Fri May 29 2020 20:51:18 GMT+0800 (中国标准时间), webkitRelativePath: "", size: 19782, …}
+    lastModified: 1590756678971
+    lastModifiedDate: Fri May 29 2020 20:51:18 GMT+0800 (中国标准时间) {}
+    name: "05.jpg"
+    size: 19782
+    type: "image/jpeg"
+    webkitRelativePath: ""
+    __proto__: File
+
+    // 解释：
+    // lastModified:数值,表示最近一次修改时间的毫秒数;
+    // lastModifiedDate:对象,表示最后一次表示最近一次修改时间的Date对象;
+    // name:本地文件系统中的文件名;
+    // size:文件的字节大小;
+    // type:字符串,文件的MIME类型;
+    // webkitRelativePath:此处为空;当在input上加上webkitdirectory属性时，用户可选择文件夹，此时weblitRelativePath表示文件夹中文件的相对路径
+    例如： <input type="file" id="inputBox" webkitdirectory>
+ -->
+
+
+ <!-- 
+     另外一种上传方式：
+     window.createObjectURL/window.URL/window.webkitURL实现图片上传预览
+  -->

@@ -1,0 +1,240 @@
+<!-- 继承base.html基类模板 -->
+{{ extend './base.html'}}
+
+{{ block 'titleBlock' }}
+文章详情页
+{{ /block}}
+
+{{ block 'scriptBlock' }}
+<script type="text/javascript" src="/news/js/detail.js"></script>
+{{ /block }}
+
+<!-- 这里detail是详情页，是没有menu，那么这个block可写也可不写 -->
+{{ block 'menuBlock' }}
+
+{{ /block }}
+
+
+{{ block 'contentLeftBlock' }}
+<div class="detail_con fl">
+    <!-- <h3>恒指创收盘历史新高 沪指创逾2个月来新高 房地产板块集体爆发</h3> -->
+    <h3>{{ result.title }}</h3>
+    <div class="detail_about clearfix">
+        <!-- <span class="time_souce fl">2018-01-16 14:38 来源: 商务部</span> -->
+        <span class="time_souce fl">{{ result.create_time | dateFormat }} 来源: {{ result.source }}</span>
+        <span class="comments fr">被点击量 {{ result.clicks ? result.clicks : 0 }}</span>
+        <span class="comment fr"></span>
+    </div>
+
+    <!-- <p class="summary">
+        摘要：昨天终结十一连阳之后，今天A股迅速重拾涨势，沪指收涨0.8%创逾两个月新高。房地产板块集体走强，尾盘更是放量大涨，万科A一度逼近涨停，最终收涨8.4%，股价创历史新高。
+    </p> -->
+
+    <p class="summary">
+        {{ result.digest }}
+    </p>
+
+    <!-- <h4>恒指创收盘历史新高</h4> -->
+    <h4>{{ result.digest }}</h4>
+
+    <!-- 语法：arttemplate的原文输出 -->
+    {{@ result.content }}
+    <!--这个@号（旧写法是#号）是为了把字符串格式化成html-->
+    <!-- 下面是更旧的写法 -->
+    <!-- <%- result.content %> -->
+
+    <!-- <p>
+        港股方面今天表现强劲，开年以来的上涨势头仍然延续，恒指收涨1.8%创下收盘新高。此前恒指的峰值是在2007年10月份盘中触及的31958点。</p>
+    <p>
+        今天恒指51支成份股中，42支上涨，7支下跌，对恒指贡献最大的个股包括建设银行上涨3.7%，腾讯控股上涨2.5%，香港交易所上涨5.9%，工商银行上涨3.3%，中国平安上涨2.8%。</p>
+    <p>
+        2018年的前15日，恒生指数已经上涨了4.75%，恒生国企指数上涨了6.50%。</p>
+    <p>
+        兴业证券张忆东在最新报告中表示，港股作为全球估值洼地，不论是分红率高的价值股还是业绩确定的成长股都受益于新一年中资和海外机构资金的重新布局。他维持2016年以来对“港股牛市”的判断，认为2018年港股市场会出现核心资产驱动的慢牛、长牛行情。他还预计今年下半年港股将迎来牛市主升浪。
+    </p>
+    <p>
+        与A股交相呼应，港股内房股今天也是集体爆发的行情。万科企业涨9.2%，融创中国涨3.7%，碧桂园涨3%，中国恒大涨1.6%。</p>
+    <p>
+        此外，中国平安港股股价再创历史新高，盘中一度触及91.00港元。中国平安在A股市场今天也一度上涨近2%，离历史高点仅一步之遥，但收盘时回落，最终收涨0.2%。</p>
+    <p>
+        昨天晚间，中国平安公布2017年保费收入，全年该集团控股子公司平安财险、平安人寿、平安养老、平安健康原保险合同保费收入分别为2159.84亿元、3689.34亿元、175.6亿元及21.47亿元，合计约6046.26亿元人民币，同比增28.9%。除此以外，市场传出中国平安旗下的陆金所将于4月分拆于香港上市，估值达600亿美元。
+    </p> -->
+
+
+    <!-- 不用管这里，只是vscode这里语法报错，是可以使用的 -->
+    <a href="javascript:;" class="collection block-center" data-newid="{{ result.id }}"
+        style="display: {{ isCollected ? 'none' : 'block' }} ">收藏</a>
+
+    <a href="javascript:;" class="collected block-center" data-newid="{{ result.id }}"
+        style="display: {{ !isCollected ? 'none' : 'block'  }}"><span class="out">已收藏</span><span
+            class="over">取消收藏</span></a>
+    <!-- 这里这样写还有一个点，就是内嵌式比外链式优先级高。会执行这里的代码 -->
+
+    <!-- <a href="javascript:;" class="collected block-center" data-newid="" style="display: none"><span
+            class="out">已收藏</span><span class="over">取消收藏</span></a> -->
+
+
+    {{ if !user_info }}
+    <div class="comment_form_logout">
+        登录发表你的评论
+    </div>
+    {{ else }}
+    <form action="" class="comment_form" data-newsid="{{ result.id }}">
+        <div class="person_pic">
+            <!-- <img src="/news/images/cat.jpg" alt="用户图标"> -->
+            <img src="{{ user_info.avatar_url?user_info.avatar_url:"/news/images/person01.png" }}" alt="用户图标">
+        </div>
+        <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
+        <input type="submit" name="" value="评 论" class="comment_sub">
+    </form>
+    {{ /if }}
+
+
+    <!-- <div class="comment_count">
+        4条评论
+    </div> -->
+    <!-- 这可以通过后端传过来的数据显示 -->
+    <!-- <div class="comment_count">
+        {{ result.comments_count ? result.comments_count : 0 }}条评论
+    </div> -->
+    <!-- 这也可以通过前端的方式显示，请看detail.js里面的updateCommentCount()方法直接计算评论条数的长度length -->
+    <div class="comment_count"></div>
+
+    <div class="comment_list_con">
+
+        <!-- 前端展示数据一 -->
+        {{ each comment }}
+        <div class="comment_list">
+            <div class="person_pic fl">
+                <img src="{{ $value.commenter.avatar_url }}" alt="用户图标">
+            </div>
+            <div class="user_name fl">{{ $value.commenter.nick_name }}</div>
+            <div class="comment_text fl">{{ $value.content }}</div>
+            {{ if $value.parent_id }}
+            <div class="reply_text_con fl">
+                <div class="user_name2">{{ $value.parent.user.nick_name }}</div>
+                <div class="reply_text">
+                    {{ $value.parent.content }}
+                </div>
+            </div>
+            {{ /if }}
+            <!-- dateFormat这个是在 timeFilter 里面的时间过滤器 -->
+            <div class="comment_time fl">{{ $value.create_time | dateFormat }}</div>
+            <!-- 高亮原理： 后端过来的id数组.indexOf($value.id)>=0 ?（用户点赞这个条评论吗?） 'has_comment_up' : ''  -->
+            <a href="javascript:;" class=" {{ user_like_comments_ids.indexOf($value.id)>=0 ? 'has_comment_up' : '' }} comment_up fr" data-commentid="{{ $value.id }}"
+                data-newsid="{{ $value.news_id }}" data-likecount="{{ $value.like_count ? $value.like_count : 0 }}">{{ $value.like_count ? $value.like_count : '赞' }}</a>
+                <!-- 显示点赞的数量 来自于 $value.like_count -->
+            <a href="javascript:;" class="comment_reply fr">回复</a>
+            <form class="reply_form fl" data-commentid="{{ $value.id }}" data-newsid="{{ $value.news_id }}">
+                <textarea class="reply_input"></textarea>
+                <input type="button" value="回复" class="reply_sub fr">
+                <input type="reset" name="" value="取消" class="reply_cancel fr">
+            </form>
+        </div>
+        {{ /each }}
+
+
+        <!-- 前端展示数据二 -->
+        <!-- {{ each comment }}
+        <div class="comment_list">
+            <div class="person_pic fl">
+                <img src="{{ $value.avatar_url ? $value.avatar_url : '/news/images/worm.jpg' }}" alt="用户图标">
+            </div>
+            <div class="user_name fl">{{ $value.nick_name }}</div>
+            <div class="comment_text fl">
+                {{ $value.content }}
+            </div>
+            <div class="reply_text_con fl">
+                <div class="user_name2">用户李思</div>
+                <div class="reply_text">
+                    遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
+                </div>
+            </div>
+            <div class="comment_time fl">2017-01-01 00:00:00</div>
+            <a href="javascript:;" class="comment_up has_comment_up fr">1</a>
+            <a href="javascript:;" class="comment_reply fr">回复</a>
+            <from class="reply_form fl" data-newsid="{{ $value.news_id }}" data-commentid="">
+                <textarea class="reply_input"></textarea>
+                <input type="submit" name="" value="回复" class="reply_sub fr">
+                <input type="reset" name="" value="取消" class="reply_cancel fr">
+            </from>
+        </div>
+        {{ /each }} -->
+
+
+
+
+
+        <!-- <div class="comment_list">
+            <div class="person_pic fl">
+                <img src="/news/images/worm.jpg" alt="用户图标">
+            </div>
+            <div class="user_name fl">用户张山</div>
+            <div class="comment_text fl">
+                遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
+            </div>
+            <div class="comment_time fl">2017-01-01 00:00:00</div>
+            <a href="javascript:;" class="comment_up fr">赞</a>
+            <a href="javascript:;" class="comment_reply fr">回复</a>
+            <from class="reply_form fl">
+                <textarea class="reply_input"></textarea>
+                <input type="submit" name="" value="回复" class="reply_sub fr">
+                <input type="reset" name="" value="取消" class="reply_cancel fr">
+            </from>
+        </div> -->
+
+        <!-- <div class="comment_list">
+            <div class="person_pic fl">
+                <img src="/news/images/worm.jpg" alt="用户图标">
+            </div>
+            <div class="user_name fl">用户张山</div>
+            <div class="comment_text fl">
+                遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
+            </div>
+            <div class="comment_time fl">2017-01-01 00:00:00</div>
+            <a href="javascript:;" class="comment_up fr">赞</a>
+            <a href="javascript:;" class="comment_reply fr">回复</a>
+            <from class="reply_form fl">
+                <textarea class="reply_input"></textarea>
+                <input type="submit" name="" value="回复" class="reply_sub fr">
+                <input type="reset" name="" value="取消" class="reply_cancel fr">
+            </from>
+        </div>
+
+        <div class="comment_list">
+            <div class="person_pic fl">
+                <img src="/news/images/worm.jpg" alt="用户图标">
+            </div>
+            <div class="user_name fl">用户张山</div>
+            <div class="comment_text fl">
+                遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
+            </div>
+            <div class="comment_time fl">2017-01-01 00:00:00</div>
+            <a href="javascript:;" class="comment_up fr">赞</a>
+            <a href="javascript:;" class="comment_reply fr">回复</a>
+            <from class="reply_form fl">
+                <textarea class="reply_input"></textarea>
+                <input type="submit" name="" value="回复" class="reply_sub fr">
+                <input type="reset" name="" value="取消" class="reply_cancel fr">
+            </from>
+        </div> -->
+    </div>
+
+
+</div>
+{{ /block }}
+
+{{ block 'authorCarBlock' }}
+<div class="author_card">
+    <!-- 后端写了，前端这就失效了 authorInfoImg ? authorInfoImg : '/news/images/user_pic.png' -->
+    <a href="#" class="author_pic"><img src="{{ authorInfoImg ? authorInfoImg : '/news/images/user_pic.png' }}" alt="author_pic"></a>
+    <a href="#" class="author_name">{{ authorInfo.nick_name }}</a>
+    <div class="author_resume">{{ authorInfo.signature }}</div>
+    <div class="writings"><span>总篇数</span><b>{{ authorNewsCount }}</b></div>
+    <div class="follows"><span>粉丝</span><b>{{ authorFansCount }}</b></div>
+    {{ if isShowFollowBtn }}
+    <a href="javascript:;" class="focus fr" style="display: {{ isFollow ? 'none' : 'block' }}" data-userid="{{ authorInfo.id }}">关注</a>
+    <a href="javascript:;" class="focused fr" style="display: {{ !isFollow ? 'none' : 'block' }}" data-userid="{{ authorInfo.id }}"><span class="out">已关注</span><span class="over">取消关注</span></a>
+    {{ /if }}
+</div>
+{{ /block }}

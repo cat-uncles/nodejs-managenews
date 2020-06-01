@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/news/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="/news/css/jquery.pagination.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/main.css">
+    <script type="text/javascript" src="/news/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="/news/js/jquery.pagination.min.js"></script>
+</head>
+<body class="inframe_body">
+    <div class="news_list">
+        <h3>新闻列表</h3>
+        <ul class="article_list">
+            {{ each newsList }}
+            <li>
+                <a href="/news_detail/{{ $value.id }}" target="_blank">{{ $value.title }}</a>
+                <em class="{{ $value.status | statusClassFilter }}">{{ $value.status | statusFilter }}</em>
+                <span>{{ $value.create_time | dateFormat }}</span>
+                <b class="{{ $value.status == 2 ? 'nopassreason' : '' }}">{{ $value.reason }}</b>
+            </li>
+            {{ /each }}
+            <!-- <li><a href="user_news_release.html">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><em class="pass">已通过</em><span>2018-1-17</span></li> -->
+            <!-- <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><em class="pass">已通过</em><span>2018-1-17</span></li> -->
+            <!-- <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><em class="review">审核中</em><span>2018-1-17</span></li>
+            <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><em class="review">审核中</em><span>2018-1-17</span></li>
+            <li>
+                <a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a>
+                <em class="nopass">未通过</em>
+                <span>2018-1-17</span>
+                <b>未通过原因：因为写的太boring,因为写的太boring,因为写的太boring,因为写的太boring,</b>
+            </li>
+            <li>
+                <a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a>
+                <em class="nopass">未通过</em>
+                <span>2018-1-17</span>
+                <b>未通过原因：因为写的太煽情,因为写的太煽情,因为写的太煽情,因为写的太煽情,</b>
+            </li> -->
+        </ul>
+
+        <div id="pagination" class="page"></div>
+        <script>
+            // 调用父页面的方法改变菜单指示
+            // window.parent.fnChangeMenu(2);
+
+            $(function(){
+                $("#pagination").pagination({
+                    // 插值语法直接放在js（这种方式是直接把后端传过来的数据插值语法到js代码中）
+                    currentPage: {{ currentPage }},
+                    totalPage: {{ totalPage }},
+                    callback: function(current) {
+                        location.href = "http://localhost:3000/user/user_newslist?page="+current
+                    }
+                });
+            });
+        </script>
+       
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户中心</title>
+    <link rel="stylesheet" type="text/css" href="/news/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/jquery.pagination.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/main.css">
+    <script type="text/javascript" src="/news/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/news/js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="/news/js/user_collection.js"></script>
+</head>
+
+<body class="inframe_body">
+    <div class="my_collect">
+        <h3>我的收藏</h3>
+        <ul class="article_list">
+             <!-- each collectionList 
+            <li>
+                <a href="#"> $value[0].title </a>
+                <span> $value[0].create_time | dateFormat </span>
+                <i class="collections">x</i>
+            </li>
+             /each  -->
+            {{ each collectionList }}
+            <li>
+                <a href="/news_detail/{{ $value.id }}" target="_parent">{{ $value.title }}</a>
+                <span>{{ $value.create_time | dateFormat }}</span>
+                <i class="collections" data-newid="{{ $value.id }}" title="删除">x</i>
+            </li>
+            {{ /each }}
+            <!-- <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+            <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+            <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+            <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+            <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li> -->
+        </ul>
+
+        <!-- 隐藏方式 -->
+        <div style="display: none;" class="currentPage">{{ currentPage }}</div>
+        <div style="display: none;" class="totalPage">{{ totalPage }}</div>
+
+
+        <div id="pagination" class="page"></div>
+        <script>
+            $(function () {
+                $("#pagination").pagination({
+
+                    // totalPage 参数一定要有，没有就直接不显示分页
+
+                    // 方式一：插值语法直接放在js（这种方式是直接把后端传过来的数据插值语法到js代码中）
+                    // currentPage: {{ currentPage }},
+                    // totalPage: {{ totalPage }},
+
+                    // 方式二：隐藏语法与html联合使用，比较美观（后端传过来的是string格式-->要转为number格式）
+                    currentPage: Number($(".currentPage").html()),
+                    totalPage:  Number($(".totalPage").html()),
+                    // html() 方法返回或设置被选元素的内容 (inner HTML)。如果该方法未设置参数，则返回被选元素的当前内容
+                    
+
+                    callback: function (current) {
+                        // 点击 分页按钮的时候 执行callback这里的代码
+                        // alert('ok!',current);
+                        // current 就是当前页，表示想要获取哪一页的数据
+                        
+
+                        // 点击就是发起get请求，第current页的数据
+                        // 点击分页 就触发 get请求 分页查询
+
+                        // 根据后端的接口写 http://localhost:3000/news/collection_user ? 传的数据 page = current
+                        
+                        location.href = "http://localhost:3000/news/collection_user?page="+current
+                        // location.href 当前页面打开URL页面，传page过去 实现让后端接口触发
+                    }
+                });
+            });
+        </script>
+
+    </div>
+</body>
+
+</html>

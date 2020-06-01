@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>用户中心</title>
+	<link rel="stylesheet" type="text/css" href="/news/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/jquery.pagination.css">
+    <link rel="stylesheet" type="text/css" href="/news/css/main.css">
+    <script type="text/javascript" src="/news/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="/news/js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="/news/js/user_follow.js"></script>
+</head>
+<body class="inframe_body">
+        <h3 class="common_title">我的关注</h3>
+        <ul class="card_list_con">
+            {{ each authorCommentResult }}
+            <li class="author_card card_list">
+                <a href="#" target="_blank" class="author_pic"><img src="{{ $value[0].avatar_url ? $value[0].avatar_url : '/news/images/person01.png' }}" alt="author_pic"></a>
+                <a href="#" target="_blank" class="author_name">{{ $value[0].nick_name }}</a>
+                <div class="author_resume">{{ $value[0].signature }}</div>
+                <div class="writings"><span>总篇数</span><b>{{ $value[0].newsCount }}</b></div>
+                <div class="follows"><span>粉丝</span><b>{{ $value[0].authorfans }}</b></div>
+                <!-- <a href="javascript:;" class="focus fr" data-userid="{{ $value[0].id }}">关注</a> -->
+                <a href="javascript:;" class="focused fr" data-userid="{{ $value[0].id }}"><span class="out">已关注</span><span class="over">取消关注</span></a>
+            </li>
+            {{ /each }}
+            <!-- <li class="author_card card_list">
+                <a href="#" target="_blank" class="author_pic"><img src="/news/images/cat.jpg" alt="author_pic"></a>
+                <a href="#" target="_blank" class="author_name">张大山</a>
+                <div class="author_resume">张大山的简介,张大山</div>
+                <div class="writings"><span>总篇数</span><b>23</b></div>
+                <div class="follows"><span>粉丝</span><b>36</b></div>
+                <a href="javascript:;" class="focus fr">关注</a>
+                <a href="javascript:;" class="focused fr"><span class="out">已关注</span><span class="over">取消关注</span></a>
+            </li>
+            <li class="author_card card_list">
+                <a href="#" target="_blank" class="author_pic"><img src="/news/images/cat.jpg" alt="author_pic"></a>
+                <a href="#" target="_blank" class="author_name">张大山</a>
+                <div class="author_resume">张大山的简介,张大山</div>
+                <div class="writings"><span>总篇数</span><b>23</b></div>
+                <div class="follows"><span>粉丝</span><b>36</b></div>
+                <a href="javascript:;" class="focus fr">关注</a>
+                <a href="javascript:;" class="focused fr"><span class="out">已关注</span><span class="over">取消关注</span></a>
+            </li>
+            <li class="author_card card_list">
+                <a href="#" target="_blank" class="author_pic"><img src="/news/images/cat.jpg" alt="author_pic"></a>
+                <a href="#" target="_blank" class="author_name">张大山</a>
+                <div class="author_resume">张大山的简介,张大山</div>
+                <div class="writings"><span>总篇数</span><b>23</b></div>
+                <div class="follows"><span>粉丝</span><b>36</b></div>
+                <a href="javascript:;" class="focus fr">关注</a>
+                <a href="javascript:;" class="focused fr"><span class="out">已关注</span><span class="over">取消关注</span></a>
+            </li> -->
+        </ul>
+        
+        
+        <div id="pagination" class="page"></div>
+        <script>
+            $(function() {
+                $("#pagination").pagination({
+                    // 这种方式是直接把后端传过来的数据插值语法到js代码中
+                    currentPage: {{ currentPage }},
+                    totalPage: {{ totalPage }},
+                    callback: function(current) {
+                        //  点击分页 就触发 get请求 分页查询
+                        location.href = "http://localhost:3000/news/followed_user?page="+current
+                    }
+                });
+            });
+        </script>
+</body>
+</html>
